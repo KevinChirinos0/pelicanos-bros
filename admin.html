@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Panel administrativo de Pelícanos Bros para gestionar pedidos, cocina, clientes y menú.">
+  <title>Pelícanos Bros | Administración</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="js/data.js" defer></script>
+  <script src="js/admin.js" defer></script>
+</head>
+<body class="admin-page">
+  <a class="skip-link" href="#main-content">Saltar al contenido principal</a>
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="Pelícanos Bros, volver a la tienda">
+      <span class="brand-mark" aria-hidden="true">PB</span>
+      <span class="brand-name">Pelícanos <strong>Bros</strong></span>
+    </a>
+    <nav class="main-nav" aria-label="Navegación administrativa">
+      <span id="admin-session-name" class="nav-context" hidden></span>
+      <button id="admin-logout-button" class="button button-outline" type="button" hidden>Cerrar sesión</button>
+      <a class="button button-outline" href="index.html">Volver a la tienda</a>
+    </nav>
+  </header>
+
+  <main id="main-content" class="admin-container" tabindex="-1">
+    <section id="admin-access" class="login-card" aria-labelledby="admin-login-title">
+      <p class="eyebrow">Área restringida</p>
+      <h1 id="admin-login-title">Acceso administrativo</h1>
+      <p class="muted">Ingresa con una cuenta autorizada para gestionar los pedidos y el menú.</p>
+
+      <form id="admin-login-form" class="form-stack">
+        <label for="admin-username">Usuario</label>
+        <input id="admin-username" name="username" type="text" autocomplete="username" minlength="3" maxlength="60" required>
+
+        <label for="admin-password">Contraseña</label>
+        <input id="admin-password" name="password" type="password" autocomplete="current-password" minlength="6" maxlength="128" required>
+
+        <button class="button button-primary button-block" type="submit">Ingresar al panel</button>
+      </form>
+      <p id="admin-login-message" class="form-message" role="status" aria-live="polite"></p>
+    </section>
+
+    <section id="admin-dashboard" class="admin-dashboard" hidden aria-label="Panel de administración">
+      <aside class="admin-sidebar">
+        <div class="admin-sidebar-heading">
+          <p class="eyebrow">Gestión</p>
+          <h2>Administración</h2>
+        </div>
+        <nav class="admin-nav" aria-label="Secciones del panel">
+          <button class="admin-nav-button is-active" type="button" data-panel="summary" aria-current="page">Resumen</button>
+          <button class="admin-nav-button" type="button" data-panel="orders">Pedidos</button>
+          <button class="admin-nav-button" type="button" data-panel="kitchen">Cocina</button>
+          <button class="admin-nav-button" type="button" data-panel="customers">Clientes</button>
+          <button class="admin-nav-button" type="button" data-panel="menu">Menú</button>
+        </nav>
+      </aside>
+
+      <div class="admin-content">
+        <section id="panel-summary" class="admin-panel" aria-labelledby="summary-title">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Vista general</p>
+              <h1 id="summary-title">Resumen del día</h1>
+            </div>
+          </div>
+          <div class="metrics-grid">
+            <article class="metric-card"><span>Pedidos de hoy</span><strong id="metric-orders">—</strong></article>
+            <article class="metric-card"><span>Por preparar</span><strong id="metric-pending">—</strong></article>
+            <article class="metric-card"><span>Pagos pendientes</span><strong id="metric-payments">—</strong></article>
+            <article class="metric-card"><span>Ventas pagadas</span><strong id="metric-sales">—</strong></article>
+          </div>
+          <div class="panel-card">
+            <h2>Próximos recojos</h2>
+            <div id="summary-upcoming-orders" aria-live="polite"><p class="muted">No hay recojos pendientes.</p></div>
+          </div>
+        </section>
+
+        <section id="panel-orders" class="admin-panel" aria-labelledby="orders-admin-title" hidden>
+          <div class="section-heading">
+            <div><p class="eyebrow">Gestión de ventas</p><h1 id="orders-admin-title">Pedidos</h1></div>
+            <div class="admin-heading-actions">
+              <button id="orders-refresh-button" class="button button-outline" type="button">Actualizar</button>
+              <button id="orders-export-csv" class="button button-primary" type="button">Exportar CSV</button>
+            </div>
+          </div>
+          <div class="filter-bar">
+            <label class="filter-field" for="order-search">Buscar pedido<input id="order-search" type="search" placeholder="Código, cliente, correo o teléfono"></label>
+            <label class="filter-field" for="order-status-filter">Estado
+              <select id="order-status-filter">
+                <option value="todos">Todos</option>
+                <option value="pendiente">Recibido</option>
+                <option value="en_preparacion">En preparación</option>
+                <option value="listo">Listo</option>
+                <option value="entregado">Entregado</option>
+                <option value="cancelado">Cancelado</option>
+              </select>
+            </label>
+            <label class="filter-field" for="order-payment-filter">Pago
+              <select id="order-payment-filter">
+                <option value="todos">Todos</option>
+                <option value="pendiente">Pendiente</option>
+                <option value="pagado">Pagado</option>
+              </select>
+            </label>
+            <label class="filter-field" for="order-date-filter">Fecha de recojo<input id="order-date-filter" type="date"></label>
+          </div>
+          <p id="admin-orders-message" class="admin-feedback" role="status" aria-live="polite"></p>
+          <div class="table-wrap" role="region" aria-label="Tabla de pedidos; desplázate horizontalmente si es necesario" tabindex="0">
+            <table>
+              <caption class="visually-hidden">Listado de pedidos registrados</caption>
+              <thead><tr><th scope="col">Código</th><th scope="col">Cliente</th><th scope="col">Recojo</th><th scope="col">Total</th><th scope="col">Pago</th><th scope="col">Estado</th><th scope="col">Acciones</th></tr></thead>
+              <tbody id="orders-table-body"><tr><td colspan="7" class="table-empty">Los pedidos aparecerán aquí.</td></tr></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="panel-kitchen" class="admin-panel" aria-labelledby="kitchen-title" hidden>
+          <div class="section-heading">
+            <div><p class="eyebrow">Producción</p><h1 id="kitchen-title">Tablero de cocina</h1>
+              <p class="muted">Pedidos activos ordenados por hora de recojo.</p>
+            </div>
+            <button id="kitchen-refresh-button" class="button button-outline" type="button">Actualizar tablero</button>
+          </div>
+          <p id="kitchen-message" class="admin-feedback" role="status" aria-live="polite"></p>
+          <div class="kitchen-board">
+            <section class="kitchen-column" aria-labelledby="kitchen-received-title">
+              <div class="kitchen-column-heading"><h2 id="kitchen-received-title">Por preparar</h2><span id="kitchen-received-count" class="kitchen-count">0</span></div>
+              <div id="kitchen-received" class="kitchen-cards"><p class="muted">No hay pedidos por preparar.</p></div>
+            </section>
+            <section class="kitchen-column" aria-labelledby="kitchen-preparing-title">
+              <div class="kitchen-column-heading"><h2 id="kitchen-preparing-title">En preparación</h2><span id="kitchen-preparing-count" class="kitchen-count">0</span></div>
+              <div id="kitchen-preparing" class="kitchen-cards"><p class="muted">No hay pedidos en preparación.</p></div>
+            </section>
+            <section class="kitchen-column" aria-labelledby="kitchen-ready-title">
+              <div class="kitchen-column-heading"><h2 id="kitchen-ready-title">Listos</h2><span id="kitchen-ready-count" class="kitchen-count">0</span></div>
+              <div id="kitchen-ready" class="kitchen-cards"><p class="muted">No hay pedidos listos para recoger.</p></div>
+            </section>
+          </div>
+        </section>
+
+        <section id="panel-customers" class="admin-panel" aria-labelledby="customers-title" hidden>
+          <div class="section-heading">
+            <div><p class="eyebrow">Cuentas registradas</p><h1 id="customers-title">Clientes</h1>
+              <p class="muted">Consulta pedidos, total pagado y última compra de cada cliente.</p>
+            </div>
+            <button id="customers-refresh-button" class="button button-outline" type="button">Actualizar clientes</button>
+          </div>
+          <label class="filter-field customer-search-field" for="customer-search">Buscar cliente
+            <input id="customer-search" type="search" placeholder="Nombre, correo o teléfono">
+          </label>
+          <p id="admin-customers-message" class="admin-feedback" role="status" aria-live="polite"></p>
+          <div class="table-wrap" role="region" aria-label="Tabla de clientes; desplázate horizontalmente si es necesario" tabindex="0">
+            <table>
+              <caption class="visually-hidden">Listado de clientes y resumen de sus pedidos</caption>
+              <thead><tr><th scope="col">Nombre</th><th scope="col">Correo</th><th scope="col">Teléfono</th><th scope="col">Pedidos</th><th scope="col">Total pagado</th><th scope="col">Último pedido</th><th scope="col">Acciones</th></tr></thead>
+              <tbody id="customers-table-body"><tr><td colspan="7" class="table-empty">Los clientes aparecerán aquí.</td></tr></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="panel-menu" class="admin-panel" aria-labelledby="menu-admin-title" hidden>
+          <div class="section-heading">
+            <div><p class="eyebrow">Catálogo</p><h1 id="menu-admin-title">Administrar menú</h1>
+              <p class="muted">Edita el precio base y la disponibilidad de los productos existentes.</p>
+            </div>
+            <button id="restore-menu-button" class="button button-outline" type="button">Restaurar menú original</button>
+          </div>
+          <p id="admin-menu-message" class="admin-feedback" role="status" aria-live="polite"></p>
+          <form id="product-form" class="product-form panel-card">
+            <h2>Editar producto</h2>
+            <div class="form-grid">
+              <div class="form-field"><label for="product-select">Producto</label><select id="product-select" name="productId" required><option value="">Selecciona un producto</option></select></div>
+              <div class="form-field"><label for="product-price">Precio base (S/)</label><input id="product-price" name="price" type="number" min="0.10" max="9999" step="0.10" required></div>
+              <div class="form-field"><label for="product-availability">Disponibilidad</label><select id="product-availability" name="available" required><option value="true">Disponible</option><option value="false">Agotado</option></select></div>
+              <div class="form-field product-current-info"><span class="product-current-label">Producto seleccionado</span><strong id="product-current-name">Ninguno</strong><span id="product-current-category" class="admin-cell-secondary">Selecciona un producto para editarlo.</span></div>
+            </div>
+            <div class="product-form-actions">
+              <button class="button button-primary" type="submit">Guardar cambios</button>
+              <button id="product-cancel-edit" class="button button-outline" type="button">Cancelar edición</button>
+            </div>
+          </form>
+          <div class="table-wrap" role="region" aria-label="Tabla de productos; desplázate horizontalmente si es necesario" tabindex="0">
+            <table>
+              <caption class="visually-hidden">Productos del menú y disponibilidad actual</caption>
+              <thead><tr><th scope="col">Producto</th><th scope="col">Categoría</th><th scope="col">Precio base</th><th scope="col">Disponibilidad</th><th scope="col">Acciones</th></tr></thead>
+              <tbody id="products-table-body"><tr><td colspan="5" class="table-empty">Los productos aparecerán aquí.</td></tr></tbody>
+            </table>
+          </div>
+        </section>
+
+        <dialog id="customer-history-dialog" class="dialog customer-history-dialog" aria-labelledby="customer-history-title">
+          <div class="dialog-header">
+            <div><p class="eyebrow">Historial del cliente</p><h2 id="customer-history-title">Pedidos del cliente</h2><p id="customer-history-subtitle" class="muted"></p></div>
+            <button id="customer-history-close" class="icon-button" type="button" aria-label="Cerrar historial">×</button>
+          </div>
+          <div id="customer-history-content" class="customer-history-content"></div>
+        </dialog>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><p><strong>Pelícanos Bros</strong> · Panel administrativo</p></footer>
+</body>
+</html>

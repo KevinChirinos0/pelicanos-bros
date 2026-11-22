@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Tienda virtual de Pelícanos Bros. Revisa el menú y prepara tu pedido para recoger en tienda.">
+  <title>Pelícanos Bros | Tienda</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="js/data.js" defer></script>
+  <script src="js/store.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Saltar al contenido principal</a>
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="Pelícanos Bros, ir al inicio">
+      <span class="brand-mark" aria-hidden="true">PB</span>
+      <span class="brand-name">Pelícanos <strong>Bros</strong></span>
+    </a>
+
+    <nav class="main-nav" aria-label="Navegación principal">
+      <a href="#menu">Menú</a>
+      <a href="#mis-pedidos">Mis pedidos</a>
+      <button id="customer-auth-button" class="button button-outline" type="button" data-dialog-open="auth-dialog">
+        Iniciar sesión
+      </button>
+      <button id="customer-logout-button" class="button button-outline" type="button" hidden>
+        Cerrar sesión
+      </button>
+      <a class="button button-dark" href="admin.html">Panel administrativo</a>
+    </nav>
+  </header>
+
+  <main id="main-content" class="page-container" tabindex="-1">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="eyebrow">Sabor para compartir</p>
+        <h1 id="hero-title">Tu pedido listo para recoger.</h1>
+        <p>Explora el menú, personaliza tus acompañamientos y elige la hora de recojo.</p>
+        <a class="button button-primary" href="#menu">Ver el menú</a>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <span class="hero-art-mark">PB</span>
+        <span class="hero-art-caption">Hecho al momento</span>
+      </div>
+    </section>
+
+    <div class="store-layout">
+      <div class="store-main">
+        <section id="menu" class="content-section" aria-labelledby="menu-title">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Elige tus favoritos</p>
+              <h2 id="menu-title">Nuestro menú</h2>
+            </div>
+            <p class="muted">Los precios se mostrarán en soles (S/).</p>
+          </div>
+
+          <div class="category-tabs" role="group" aria-label="Filtrar productos por categoría">
+            <button class="category-button is-active" type="button" data-category="todos" aria-pressed="true">Todos</button>
+            <button class="category-button" type="button" data-category="pelicanos" aria-pressed="false">Pelícanos</button>
+            <button class="category-button" type="button" data-category="bebidas" aria-pressed="false">Bebidas</button>
+            <button class="category-button" type="button" data-category="extras" aria-pressed="false">Extras</button>
+          </div>
+
+          <p id="product-results" class="product-results" aria-live="polite">Cargando menú…</p>
+          <div id="product-grid" class="product-grid">
+            <div class="empty-state">
+              <span class="empty-state-icon" aria-hidden="true">🍗</span>
+              <h3>Cargando nuestros productos</h3>
+              <p>Estamos preparando el menú de Pelícanos Bros.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="mis-pedidos" class="content-section orders-section" aria-labelledby="orders-title">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Seguimiento</p>
+              <h2 id="orders-title">Mis pedidos</h2>
+            </div>
+          </div>
+          <div id="customer-orders" class="customer-orders-container" aria-live="polite" aria-relevant="additions text">
+            <div class="empty-state empty-state-horizontal">
+              <div>
+                <h3>Consulta tus pedidos</h3>
+                <p>Inicia sesión para consultar el estado y el historial de tus pedidos.</p>
+              </div>
+              <button class="button button-outline" type="button" data-dialog-open="auth-dialog">Iniciar sesión</button>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <aside class="cart-panel" aria-labelledby="cart-title">
+        <div class="cart-heading">
+          <div>
+            <p class="eyebrow">Tu selección</p>
+            <h2 id="cart-title">Mi carrito</h2>
+          </div>
+          <span class="cart-count" id="cart-count" aria-label="Cantidad de productos">0</span>
+        </div>
+
+        <div id="cart-content" class="cart-content" aria-live="polite">
+          <p class="muted">Todavía no agregaste productos.</p>
+        </div>
+
+        <div class="cart-subtotal-row">
+          <span>Subtotal</span>
+          <strong id="cart-subtotal">S/ 0.00</strong>
+        </div>
+        <div class="cart-total-row">
+          <span>Total</span>
+          <strong id="cart-total">S/ 0.00</strong>
+        </div>
+        <button class="button button-primary button-block" type="button" id="checkout-button" disabled>
+          Continuar pedido
+        </button>
+        <p class="cart-footnote">El precio final se confirmará antes de registrar el pedido.</p>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p><strong>Pelícanos Bros</strong> · Pedidos para recoger en tienda</p>
+    <p><a href="admin.html">Acceso administrativo</a></p>
+  </footer>
+
+  <dialog class="dialog" id="auth-dialog" aria-labelledby="auth-title">
+    <div class="dialog-header">
+      <div>
+        <p class="eyebrow">Tu cuenta</p>
+        <h2 id="auth-title">Bienvenido</h2>
+      </div>
+      <button class="icon-button" type="button" aria-label="Cerrar ventana" data-dialog-close>×</button>
+    </div>
+
+    <div class="dialog-tabs" role="tablist" aria-label="Acceso a la cuenta" aria-orientation="horizontal">
+      <button id="login-tab" class="dialog-tab is-active" type="button" role="tab" aria-selected="true" aria-controls="login-panel" tabindex="0" data-auth-tab="login">Iniciar sesión</button>
+      <button id="register-tab" class="dialog-tab" type="button" role="tab" aria-selected="false" aria-controls="register-panel" tabindex="-1" data-auth-tab="register">Crear cuenta</button>
+    </div>
+
+    <section id="login-panel" class="dialog-panel" role="tabpanel" aria-labelledby="login-tab" tabindex="0">
+      <form id="customer-login-form" class="form-stack">
+        <label for="login-identifier">Usuario o correo electrónico</label>
+        <input id="login-identifier" name="identifier" type="text" autocomplete="username" maxlength="254" required>
+
+        <label for="login-password">Contraseña</label>
+        <input id="login-password" name="password" type="password" autocomplete="current-password" minlength="6" maxlength="128" required>
+
+        <button class="button button-primary button-block" type="submit">Ingresar</button>
+      </form>
+    </section>
+
+    <section id="register-panel" class="dialog-panel" role="tabpanel" aria-labelledby="register-tab" tabindex="0" hidden>
+      <form id="customer-register-form" class="form-stack">
+        <label for="register-name">Nombre completo</label>
+        <input id="register-name" name="name" type="text" autocomplete="name" minlength="2" maxlength="100" required>
+
+        <label for="register-email">Correo electrónico</label>
+        <input id="register-email" name="email" type="email" autocomplete="email" maxlength="254" required>
+
+        <label for="register-phone">Teléfono</label>
+        <input id="register-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" pattern="[0-9+() -]{7,20}" maxlength="20" aria-describedby="register-phone-help" required>
+        <p id="register-phone-help" class="field-help">Introduce entre 7 y 20 caracteres: números, espacios, paréntesis o el signo +.</p>
+
+        <label for="register-password">Contraseña</label>
+        <input id="register-password" name="password" type="password" autocomplete="new-password" minlength="6" maxlength="128" aria-describedby="register-password-help" required>
+        <p id="register-password-help" class="field-help">Usa al menos 6 caracteres, como establece el documento del proyecto.</p>
+
+        <button class="button button-primary button-block" type="submit">Crear cuenta</button>
+      </form>
+    </section>
+    <p id="auth-message" class="form-message" role="status" aria-live="polite"></p>
+  </dialog>
+
+  <dialog class="dialog product-dialog" id="product-dialog" aria-labelledby="product-dialog-title">
+    <div class="dialog-header">
+      <div>
+        <p class="eyebrow">Personaliza tu plato</p>
+        <h2 id="product-dialog-title">Tu Pelícano</h2>
+        <p id="product-dialog-description" class="muted dialog-description"></p>
+      </div>
+      <button class="icon-button" type="button" aria-label="Cerrar ventana" data-dialog-close>×</button>
+    </div>
+
+    <form id="product-customization-form" class="form-stack">
+      <input id="custom-product-id" name="productId" type="hidden">
+      <div id="customization-fields" class="customization-fields"></div>
+
+      <div class="form-field quantity-field">
+        <label for="custom-product-quantity">Cantidad</label>
+        <input id="custom-product-quantity" name="quantity" type="number" min="1" max="99" step="1" value="1" required>
+      </div>
+
+      <div class="custom-price-box" aria-live="polite" aria-atomic="true">
+        <div><span>Precio base</span><strong id="custom-base-price">S/ 0.00</strong></div>
+        <div><span>Ajustes</span><strong id="custom-adjustment">S/ 0.00</strong></div>
+        <div><span>Precio unitario</span><strong id="custom-unit-price">S/ 0.00</strong></div>
+        <div class="custom-total"><span>Total</span><strong id="custom-line-total">S/ 0.00</strong></div>
+      </div>
+
+      <button class="button button-primary button-block" type="submit">Agregar al carrito</button>
+    </form>
+    <p id="product-dialog-message" class="form-message" role="status" aria-live="polite"></p>
+  </dialog>
+
+  <dialog class="dialog" id="checkout-dialog" aria-labelledby="checkout-title">
+    <div class="dialog-header">
+      <div>
+        <p class="eyebrow">Último paso</p>
+        <h2 id="checkout-title">Confirmar pedido</h2>
+      </div>
+      <button class="icon-button" type="button" aria-label="Cerrar ventana" data-dialog-close>×</button>
+    </div>
+
+    <form id="checkout-form" class="form-stack">
+      <section class="checkout-preview" aria-labelledby="checkout-preview-title">
+        <h3 id="checkout-preview-title">Resumen de tu pedido</h3>
+        <div id="checkout-summary" class="checkout-summary" aria-live="polite"></div>
+      </section>
+
+      <label for="pickup-time">Fecha y hora de recojo</label>
+      <input id="pickup-time" name="pickupTime" type="datetime-local" aria-describedby="pickup-time-help" required>
+      <p id="pickup-time-help" class="field-help">El recojo debe programarse con al menos 10 minutos de anticipación.</p>
+
+      <label for="checkout-phone">Teléfono de contacto</label>
+      <input id="checkout-phone" name="phone" type="tel" inputmode="tel" pattern="[0-9+() -]{7,20}" minlength="7" maxlength="20" aria-describedby="checkout-phone-help" required>
+      <p id="checkout-phone-help" class="field-help">Introduce un teléfono válido de al menos 7 dígitos.</p>
+
+      <label for="payment-method">Método de pago</label>
+      <select id="payment-method" name="paymentMethod" aria-describedby="payment-method-help" required>
+        <option value="">Selecciona un método</option>
+        <option value="efectivo">Efectivo</option>
+        <option value="yape">Yape</option>
+        <option value="plin">Plin</option>
+        <option value="transferencia">Transferencia</option>
+      </select>
+      <p id="payment-method-help" class="field-help">El método se registra como declarado. El pago queda pendiente hasta que el administrador lo verifique.</p>
+
+      <label for="order-note">Nota para cocina <span class="muted">(opcional)</span></label>
+      <textarea id="order-note" name="note" rows="3" maxlength="300" aria-describedby="order-note-help" placeholder="Alguna indicación para preparar tu pedido..."></textarea>
+      <p id="order-note-help" class="field-help">Opcional. Máximo 300 caracteres.</p>
+
+      <div class="price-summary">
+        <span>Total del pedido</span>
+        <strong id="checkout-total">S/ 0.00</strong>
+      </div>
+      <button class="button button-primary button-block" id="checkout-submit-button" type="submit">Confirmar pedido</button>
+    </form>
+
+    <section id="checkout-receipt" class="checkout-receipt" aria-live="polite" hidden>
+      <div class="receipt-success-icon" aria-hidden="true">✓</div>
+      <p class="eyebrow">Pedido registrado</p>
+      <h3>¡Gracias por tu compra!</h3>
+      <p class="muted">Presenta este código al recoger tu pedido.</p>
+      <strong id="confirmed-order-code" class="receipt-order-code">PB-0001</strong>
+      <dl class="receipt-details">
+        <div><dt>Estado del pedido</dt><dd id="confirmed-order-status">Recibido</dd></div>
+        <div><dt>Fecha y hora de recojo</dt><dd id="confirmed-order-pickup">—</dd></div>
+        <div><dt>Total</dt><dd id="confirmed-order-total">S/ 0.00</dd></div>
+        <div><dt>Método de pago</dt><dd id="confirmed-order-payment-method">—</dd></div>
+        <div><dt>Estado del pago</dt><dd id="confirmed-order-payment-status">Pendiente de verificación</dd></div>
+      </dl>
+      <p class="field-help">Este sistema no realiza el cobro. El administrador verificará el pago y actualizará su estado.</p>
+    </section>
+    <p id="checkout-message" class="form-message" role="status" aria-live="polite"></p>
+  </dialog>
+
+  <div id="app-announcer" class="visually-hidden" aria-live="polite" aria-atomic="true"></div>
+</body>
+</html>
